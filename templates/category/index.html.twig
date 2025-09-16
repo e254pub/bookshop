@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Категории книг{% endblock %}
+
+{% block body %}
+    <h1>Категории</h1>
+    <div class="row">
+        {% for item in categories_with_count %}
+            {% set category = item.category %}
+            {% set book_count = item.book_count %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <a href="{{ path('category_show', {id: category.id}) }}" class="text-decoration-none text-primary">
+                                {{ category.name }}
+                            </a>
+                        </h5>
+                        <p class="text-muted small mt-auto">
+                            <strong>{{ book_count }}</strong>
+                            {% if book_count == 1 %}книга
+                            {% elseif book_count > 1 and book_count < 5 %}книги
+                            {% else %}книг{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">Нет доступных категорий.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

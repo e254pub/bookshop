@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Свяжитесь с нами{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h2 class="mb-0">Напишите нам</h2>
+                    </div>
+
+                    <div class="card-body p-4">
+                        {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+                        <div class="mb-4">
+                            <label for="{{ form.email.vars.id }}" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                            {{ form_widget(form.email, {
+                                attr: { class: 'form-control ' ~ (form.email.vars.errors|length ? 'is-invalid'), placeholder: 'example@domain.com' }
+                            }) }}
+                            {% if form.email.vars.errors|length %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.vars.errors %}{{ error.message }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.name.vars.id }}" class="form-label fw-bold">Имя</label>
+                            {{ form_widget(form.name, {
+                                attr: { class: 'form-control', placeholder: 'Ваше имя' }
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.phone.vars.id }}" class="form-label fw-bold">Телефон</label>
+                            {{ form_widget(form.phone, {
+                                attr: { class: 'form-control', placeholder: '+7 (999) 111-11-11' }
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.message.vars.id }}" class="form-label fw-bold">Сообщение <span class="text-danger">*</span></label>
+                            {{ form_widget(form.message, {
+                                attr: { class: 'form-control ' ~ (form.message.vars.errors|length ? 'is-invalid'), rows: 5, placeholder: 'Опишите ваш вопрос...' }
+                            }) }}
+                            {% if form.message.vars.errors|length %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.message.vars.errors %}{{ error.message }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_widget(form.recaptcha) }}
+                            {% if form.recaptcha.vars.errors|length %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.recaptcha.vars.errors %}{{ error.message }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send me-2"></i> Отправить сообщение
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+
+                        <!-- Подключение reCAPTCHA -->
+                        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

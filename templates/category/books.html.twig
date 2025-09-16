@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Книги: {{ category.name }}{% endblock %}
+
+{% block body %}
+    <h1>{{ category.name }}</h1>
+
+    <!-- Поисковая форма -->
+    <form method="GET" action="{{ path('category_show', {id: category.id}) }}" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Поиск по названию" value="{{ search|default('') }}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="author" class="form-control" placeholder="Поиск по автору" value="{{ author|default('') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Все статусы</option>
+                    <option value="PUBLISH" {% if status == 'PUBLISH' %}selected{% endif %}>Опубликовано</option>
+                    <option value="MEAP" {% if status == 'MEAP' %}selected{% endif %}>MEAP</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">🔍</button>
+            </div>
+        </div>
+    </form>
+
+    {% if pagination.getTotalItemCount == 0 %}
+        <p class="text-muted">В этой категории пока нет книг.</p>
+    {% else %}
+        <p class="text-muted mb-3">
+            Найдено: <strong>{{ pagination.getTotalItemCount }}</strong> книг
+        </p>
+
+        <div class="row">
+            {% for book in pagination %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if book.imagePath %}
+                            <img src="{{ asset(book.imagePath) }}" alt="{{ book.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title"><a href="{{ path('book_show', {id: book.id}) }}">{{ book.title }}</a></h6>
+                            <p class="text-muted small mb-2">
+                                {% if book.authors %}{{ book.authors|join(', ') }}{% endif %}
+                                {% if book.pageCount %}<br>Страниц: {{ book.pageCount }}{% endif %}
+                            </p>
+                            <span class="badge bg-secondary mb-2">{{ book.status }}</span>
+                            <a href="{{ path('book_show', {id: book.id}) }}" class="btn btn-outline-primary btn-sm mt-auto">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        <div class="my-4">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% endif %}
+
+    <a href="{{ path('category_index') }}" class="btn btn-secondary btn-sm">&larr; Все категории</a>
+{% endblock %}

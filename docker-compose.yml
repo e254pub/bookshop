@@ -1,0 +1,43 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - app-network
+
+  php:
+    build: ./docker/php
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - PHP_OPCACHE_ENABLE=1
+    networks:
+      - app-network
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bookshop
+      MYSQL_USER: bookuser
+      MYSQL_PASSWORD: bookpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
